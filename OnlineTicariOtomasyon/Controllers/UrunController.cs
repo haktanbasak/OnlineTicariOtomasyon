@@ -12,7 +12,7 @@ namespace OnlineTicariOtomasyon.Controllers
         // GET: Urun
         public ActionResult Index()
         {
-            var model = db.Uruns.ToList();
+            var model = db.Uruns.Where(x=>x.Durum==true).ToList();
             return View(model);
         }
 
@@ -38,7 +38,7 @@ namespace OnlineTicariOtomasyon.Controllers
 
         public ActionResult UrunSil(int id) {
             var urun = db.Uruns.Find(id);
-            db.Uruns.Remove(urun);
+            urun.Durum = false;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
