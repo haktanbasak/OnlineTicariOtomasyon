@@ -12,7 +12,7 @@ namespace OnlineTicariOtomasyon.Controllers
         // GET: Urun
         public ActionResult Index()
         {
-            var model = db.Uruns.Where(x=>x.Durum==true).ToList();
+            var model = db.Uruns.Where(x => x.Durum == true).ToList();
             return View(model);
         }
 
@@ -30,20 +30,22 @@ namespace OnlineTicariOtomasyon.Controllers
 
         [HttpPost]
         public ActionResult UrunEkle(Urun urun)
-        {            
+        {
             db.Uruns.Add(urun);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        public ActionResult UrunSil(int id) {
+        public ActionResult UrunSil(int id)
+        {
             var urun = db.Uruns.Find(id);
             urun.Durum = false;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        public ActionResult UrunGetir(int id) {
+        public ActionResult UrunGetir(int id)
+        {
             List<SelectListItem> deger1 = (from x in db.Kategoris.ToList()
                                            select new SelectListItem
                                            {
@@ -56,7 +58,8 @@ namespace OnlineTicariOtomasyon.Controllers
             return View("UrunGetir", urun);
         }
 
-        public ActionResult UrunGuncelle(Urun urun) {
+        public ActionResult UrunGuncelle(Urun urun)
+        {
             var urn = db.Uruns.Find(urun.UrunID);
             urn.UrunAd = urun.UrunAd;
             urn.Marka = urun.Marka;
@@ -68,6 +71,12 @@ namespace OnlineTicariOtomasyon.Controllers
             urn.UrunGorsel = urun.UrunGorsel;
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult UrunListesi()
+        {
+            var degerler = db.Uruns.ToList();
+            return View(degerler);
         }
 
     }
