@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlineTicariOtomasyon.Models.Sınıflar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -23,7 +24,7 @@ namespace OnlineTicariOtomasyon.Controllers
             var toplamKategori = db.Kategoris.Count().ToString();
             ViewBag.d4 = toplamKategori;
 
-            var toplamStok = db.Uruns.Sum(x=>x.Stok);
+            var toplamStok = db.Uruns.Sum(x => x.Stok);
             ViewBag.d5 = toplamStok;
 
             var toplamMarka = (from x in db.Uruns select x.Marka).Distinct().Count().ToString();
@@ -47,7 +48,7 @@ namespace OnlineTicariOtomasyon.Controllers
             var maxMarka = db.Uruns.GroupBy(x => x.Marka).OrderByDescending(y => y.Count()).Select(z => z.Key).FirstOrDefault();
             ViewBag.d12 = maxMarka;
 
-            var enCokSatan = db.Uruns.Where(u=>u.UrunID == (db.SatisHarekets.GroupBy(x => x.UrunId).OrderByDescending(z => z.Count()).Select(y => y.Key).FirstOrDefault())).Select(k=>k.UrunAd).FirstOrDefault();
+            var enCokSatan = db.Uruns.Where(u => u.UrunID == (db.SatisHarekets.GroupBy(x => x.UrunId).OrderByDescending(z => z.Count()).Select(y => y.Key).FirstOrDefault())).Select(k => k.UrunAd).FirstOrDefault();
             ViewBag.d13 = enCokSatan;
 
             var kasadakiTutar = db.SatisHarekets.Sum(x => x.ToplamTutar).ToString();
@@ -57,9 +58,57 @@ namespace OnlineTicariOtomasyon.Controllers
             var bugunkiSatis = db.SatisHarekets.Count(x => x.Tarih == bugun).ToString();
             ViewBag.d15 = bugunkiSatis;
 
-            var bugunkiKasa = db.SatisHarekets.Where(x => x.Tarih == bugun).Sum(y => y.ToplamTutar).ToString();
+            var bugunkiKasa = db.SatisHarekets.Where(x => x.Tarih == bugun).Sum(y => (decimal?)y.ToplamTutar).ToString();
             ViewBag.d16 = bugunkiKasa;
             return View();
+        }
+
+        public ActionResult KolayTablolar()
+        {
+            var sorgu = from x in db.Caris
+                        group x by x.CariSehir into g
+                        select new SinifGrup
+                        {
+                            Sehir = g.Key,
+                            Sayi = g.Count()
+                        };
+            return View(sorgu.ToList());
+        }
+
+        public PartialViewResult Partial1()
+        {
+            var sorgu2 = from x in db.Personels
+                         group x by x.Departman.DepartmanAd into g
+                         select new SinifGrup2
+                         {
+                             Departman = g.Key,
+                             Sayi = g.Count()
+                         };
+            return PartialView(sorgu2.ToList());
+        }
+
+        public PartialViewResult Partial2()
+        {
+            var sorgu = db.Caris.ToList();
+            return PartialView(sorgu);
+        }
+
+        public PartialViewResult Partial3()
+        {
+            var sorgu = db.Uruns.ToList();
+            return PartialView(sorgu);
+        }
+
+        public PartialViewResult Partial4()
+        {
+            var sorgu = from x in db.Uruns
+                        group x by x.Marka into g
+                        select new SinifGrup3
+                        {
+                            marka = g.Key,
+                            sayi = g.Count()
+                        };
+            return PartialView(sorgu.ToList());
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using OnlineTicariOtomasyon.Models.Sınıflar;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,9 @@ namespace OnlineTicariOtomasyon.Controllers
     public class KategoriController : BaseController
     {
         // GET: Kategori
-        public ActionResult Index()
+        public ActionResult Index(int sayfa = 1)
         {
-            var degerler = db.Kategoris.ToList();
+            var degerler = db.Kategoris.ToList().ToPagedList(sayfa,4);
             return View(degerler);
         }
 

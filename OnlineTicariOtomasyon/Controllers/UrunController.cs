@@ -10,10 +10,14 @@ namespace OnlineTicariOtomasyon.Controllers
     public class UrunController : BaseController
     {
         // GET: Urun
-        public ActionResult Index()
+        public ActionResult Index(string p)
         {
-            var model = db.Uruns.Where(x => x.Durum == true).ToList();
-            return View(model);
+            var model = from x in db.Uruns select x;
+            if (!string.IsNullOrEmpty(p))
+            {
+                model = model.Where(y => y.UrunAd.Contains(p));
+            }
+            return View(model.ToList());
         }
 
         public ActionResult UrunEkle()
